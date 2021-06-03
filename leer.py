@@ -18,6 +18,7 @@ def leer_archivo(nombre_archivo):
     mat : dict
         Diccionario con la información del archivo.
     """
+    print ("Leyendo el archivo...")
     nombre_archivo_con_ext = nombre_archivo + ".mat"
     mat = scipy.io.loadmat(nombre_archivo_con_ext)
     return mat
