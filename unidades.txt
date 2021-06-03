@@ -1,0 +1,10 @@
+Parámetro, unidad
+Time, s
+NGLH, %
+NGRH, %
+INVFACUP, psia
+INVFACUT, °C
+FUELPLH, psia
+FUELPRH, psia
+FUELTRH, °C
+FUELTLH, °C

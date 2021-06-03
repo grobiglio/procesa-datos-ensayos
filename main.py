@@ -2,10 +2,12 @@
 Programa para lectura y procesamiento de datos de ensayos que se hallan
 en un archivo .mat extraído del IADS Symvionics.
 """
+# import os
 import matplotlib.pyplot as plt
 import ayuda
 import leer
 import posprocesar
+import graficar
 
 def pedir_opcion_principal():
     print("""
@@ -24,6 +26,7 @@ Menu
 
 opcion = ""
 while opcion != "5":
+#   os.system('cls') Es para limpliar la consola
     opcion = pedir_opcion_principal()
 
     if opcion == "1":
@@ -33,10 +36,7 @@ while opcion != "5":
     elif opcion == "2":
         # Lectura del archivo
         nombre_archivo = input ("Ingresar nombre de archivo: ")
-        datos = leer.leer_archivo(nombre_archivo)
-        """Variable datos -> diccionario con las siguientes claves:
-
-        """
+        datos = leer.leer_archivo(nombre_archivo) # Diccionario
         key_valor_parametros = datos["__globals__"][0]
         key_info_parametros = datos["__globals__"][1]
         info_parametros = str(datos[key_info_parametros][0])
@@ -76,10 +76,10 @@ while opcion != "5":
         tiempo_final = input("Tiempo final: ")
 
         if tiempo_inicial == "" and tiempo_final == "":
-            plt.plot(nuevos_datos[:, 0], nuevos_datos[:, no_parametro])
-            plt.grid(True)
-            plt.xlabel(nuevo_nombre_parametros[0])
-            plt.ylabel(nuevo_nombre_parametros[no_parametro])
+            tiempo = nuevos_datos[:, 0]
+            parametro = nuevos_datos[:, no_parametro]
+            unidad = ""
+            graficar.una_curva(tiempo, parametro, unidad)
         else:
             ini = int(tiempo_inicial)
             fin = int(tiempo_final)
@@ -87,6 +87,7 @@ while opcion != "5":
             plt.grid(True)
             plt.xlabel(nuevo_nombre_parametros[0])
             plt.ylabel(nuevo_nombre_parametros[no_parametro])
+            plt.savefig("figura.png")
         # Fin grafico de datos
 
     else:
