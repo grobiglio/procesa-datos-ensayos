@@ -1,41 +1,46 @@
 # -*- coding: utf-8 -*-
-"""Pos procesa la información extraída del archivo .mat."""
+"""Pos procesa la información extraída del archivo .mat.
+El pos proceso abarca los siguientes pasos:
+1. Reduce la cantidad de datos.
+2. Cambia los registros de tiempo para que inicien en 0.
+3. Cambia valores de presión para convertir presión relativa en presión
+   absoluta.
+"""
 
 import numpy as np
 
 
-def reducir_muestras(datos, frec_muestreo, muestras_por_segundo=1):
-    """
-    Reduce la cantidad de muestras de los datos ingresados.
+def reducir_datos(datos: np.ndarray, frec_muestreo: int, nueva_frec_muestreo: int = 1) -> np.ndarray:
+    """Reduce la cantidad de muestras de los datos ingresados.
 
     Parameters
     ----------
-    datos : numpy array
-        Datos originales extraídos del archivo .mat.
+    datos : numpy.ndarray
+        Datos extraídos del archivo .mat.
     frec_muestreo : int
         Frecuencia de muestreo con la que se tomaron los datos que se
         encuentran en el archivo .mat.
-    muestras_por_segundo : int, optional
-        La cantidad de muestras por segundo que quedarán en los datos de
+    nueva_frec_muestreo : int, opcional
+        La cantidad de datos por segundo que quedarán en los datos de
         salida. Valor por defecto es 1.
 
     Returns
     -------
-    nuevos_datos : numpy array
+    datos_reducidos : numpy.ndarray
         Los datos que quedan después de la reducción.
     """
-    [filas, columnas] = np.shape(datos)
-    filas_nuevos_datos = int(filas/frec_muestreo*muestras_por_segundo)
-    nuevos_datos = np.zeros((filas_nuevos_datos+1, columnas))
+    [filas_datos, columnas_datos] = np.shape(datos)
+    filas_datos_reducidos = int(filas_datos/frec_muestreo*nueva_frec_muestreo)
+    datos_reducidos = np.zeros((filas_datos_reducidos+1, columnas_datos))
     i = 0
     k = 0
     for row in datos:
-        if i % (frec_muestreo/muestras_por_segundo) == 0:
-            nuevos_datos[k, :] = datos[i, :]
+        if i % (frec_muestreo/nueva_frec_muestreo) == 0:
+            datos_reducidos[k, :] = datos[i, :]
             k += 1
         i += 1
-    print(f"Después de la reducción quedaron {filas} datos.")
-    return nuevos_datos
+    print(f"Después de la reducción quedaron {filas_datos_reducidos} datos.")
+    return datos_reducidos
 
 
 def iniciar_tiempo(datos):
