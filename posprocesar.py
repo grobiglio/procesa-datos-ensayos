@@ -29,17 +29,13 @@ def reducir_datos(datos: np.ndarray, frec_muestreo: int, nueva_frec_muestreo: in
     datos_reducidos : numpy.ndarray
         Los datos que quedan después de la reducción.
     """
-    [filas_datos, columnas_datos] = np.shape(datos)
-    filas_datos_reducidos = int(filas_datos/frec_muestreo*nueva_frec_muestreo)
-    datos_reducidos = np.zeros((filas_datos_reducidos+1, columnas_datos))
-    i = 0
-    k = 0
-    for row in datos:
-        if i % (frec_muestreo/nueva_frec_muestreo) == 0:
-            datos_reducidos[k, :] = datos[i, :]
-            k += 1
-        i += 1
-    print(f"Después de la reducción quedaron {filas_datos_reducidos} datos.")
+    r = frec_muestreo//nueva_frec_muestreo
+    [cant_muestras, cant_param] = np.shape(datos)
+    cant_muestras_reducidas = cant_muestras//r
+    datos_reducidos = np.zeros([cant_muestras_reducidas, cant_param])
+    for i in range(cant_muestras_reducidas):
+        datos_reducidos[i, :] = datos[i*r, :]
+    print(f"Después de la reducción quedaron {cant_muestras_reducidas} datos.")
     return datos_reducidos
 
 

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import leer
 import posprocesar
 import graficar
+import copy
 
 def pedir_opcion_principal():
     print("""
@@ -25,6 +26,7 @@ Menu
     return opcion_principal
 
 os.system('cls')
+figura = 0
 
 opcion_principal = ""
 while opcion_principal != "5":
@@ -35,7 +37,8 @@ while opcion_principal != "5":
 
     elif opcion_principal == "2":
         # Lectura del archivo
-        nombre_archivo = input ("Ingresar nombre de archivo: ")
+        # nombre_archivo = input ("Ingresar nombre de archivo: ")
+        nombre_archivo = "datos_en_bruto"
         cont_mat = leer.leer_archivo(nombre_archivo)
         print(f"Se ha leído con éxito la información del archivo {nombre_archivo}.mat.")
         key_datos = cont_mat["__globals__"][0]
@@ -46,7 +49,6 @@ while opcion_principal != "5":
         nombre_parametros = leer.devolver_nombre_parametros(export_info)
         cant_parametros = len(nombre_parametros)
         datos = cont_mat[key_datos]
-        print(type(datos))
         print(f"El archivo tiene información de {cant_parametros} parámetros.")
         for nombre_parametro in nombre_parametros:
             print(nombre_parametro)
@@ -68,32 +70,47 @@ while opcion_principal != "5":
         duracion_ensayo = datos_reducidos[-1, 0]
         print(f"El ensayo tuvo una duración de {duracion_ensayo:0.0f} segundos ({duracion_ensayo/3600:0.2f} horas).")
         nuevo_nombre_parametros = posprocesar.renombrar_parametros(nombre_parametros)
+        print("Los parámetros se renombraron. Los nuevos nombres son:")
+        for nombre_parametro in nuevo_nombre_parametros:
+            print(nombre_parametro)
         # Fin pos procesamiento de datos leidos
 
     elif opcion_principal == "4":
         # Gráfico de datos
+        id_param = {
+            "no_param": 0,
+            "param": ""
+        }
+        param_a_graficar = []
+        no_parametro = -1
         print("\n¿Qué parámetro querés graficar")
         for nombre in enumerate(nuevo_nombre_parametros):
             print (f"{nombre[0]}: {nombre[1]}")
-        no_parametro = int(input("? "))
-        tiempo_inicial = input("Tiempo inicial: ")
-        tiempo_final = input("Tiempo final: ")
+        while no_parametro != 0:
+            no_parametro = int(input("? "))
+            id_param["no_param"] = no_parametro
+            id_param["param"] = nuevo_nombre_parametros[no_parametro]
+            d = copy.deepcopy(id_param)
+            param_a_graficar.append(d)
+        print(param_a_graficar)
+        ti = input("Tiempo inicial: ")
+        tf = input("Tiempo final: ")
 
-        if tiempo_inicial == "" and tiempo_final == "":
-            tiempo = datos_reducidos[:, 0]
-            parametro = datos_reducidos[:, no_parametro]
-            unidad = ""
-            graficar.una_curva(tiempo, parametro, unidad)
-            #os.system("C:\Users\Guillermo\Documents\desarrollos\procesa-datos-ensayos\figura.png")
-            os.system("C:/Users/Guillermo/Documents/desarrollos/procesa-datos-ensayos/figura.png")
-        else:
-            ini = int(tiempo_inicial)
-            fin = int(tiempo_final)
-            plt.plot(datos_reducidos[ini:fin, 0], datos_reducidos[ini:fin, no_parametro])
-            plt.grid(True)
-            plt.xlabel(nuevo_nombre_parametros[0])
-            plt.ylabel(nuevo_nombre_parametros[no_parametro])
-            plt.savefig("figura.png")
+        if ti == "" and tf == "":
+            ti = 0
+            tf = duracion_ensayo
+        
+        tiempo = datos_reducidos[:, param_a_graficar[-1]["no_param"]]
+        parametro = datos_reducidos[:, param_a_graficar[0]["no_param"]]
+        unidad = ""
+        graficar.graficar_varias_curvas(float(ti),
+                                        float(tf),
+                                        datos_reducidos,
+                                        param_a_graficar,
+                                        nueva_frec_muestreo,
+                                        "",
+                                        figura)
+        figura += 1
         # Fin grafico de datos
 
     else:
