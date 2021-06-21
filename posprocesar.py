@@ -10,7 +10,7 @@ El pos proceso abarca los siguientes pasos:
 import numpy as np
 
 
-def reducir_datos(datos: np.ndarray, frec_muestreo: int, nueva_frec_muestreo: int = 1) -> np.ndarray:
+def reducir_datos(datos: np.ndarray, frec_muestreo: int) -> np.ndarray:
     """Reduce la cantidad de muestras de los datos ingresados.
 
     Parameters
@@ -20,22 +20,30 @@ def reducir_datos(datos: np.ndarray, frec_muestreo: int, nueva_frec_muestreo: in
     frec_muestreo : int
         Frecuencia de muestreo con la que se tomaron los datos que se
         encuentran en el archivo .mat.
-    nueva_frec_muestreo : int, opcional
-        La cantidad de datos por segundo que quedarán en los datos de
-        salida. Valor por defecto es 1.
 
     Returns
     -------
     datos_reducidos : numpy.ndarray
         Los datos que quedan después de la reducción.
     """
+    ingreso_del_usuario = input("Ingresar nueva frecuencia de muestreo: ")
+    try:
+        nueva_frec_muestreo = int(ingreso_del_usuario)
+        if nueva_frec_muestreo < 1 or nueva_frec_muestreo > frec_muestreo:
+            print(f"El valor ingresado sebe ser mayor o igual a 1 y menor a \
+{frec_muestreo}. No se modificará la frecuencia de muestreo.")
+            return datos
+    except ValueError:
+        print("Error en el ingreso de datos, no se modificará la frecuencia de\
+ muestreo.")
+        return datos
     r = frec_muestreo//nueva_frec_muestreo
-    [cant_muestras, cant_param] = np.shape(datos)
-    cant_muestras_reducidas = cant_muestras//r
-    datos_reducidos = np.zeros([cant_muestras_reducidas, cant_param])
-    for i in range(cant_muestras_reducidas):
+    [cant_datos, cant_param] = np.shape(datos)
+    cant_reducida_datos = cant_datos//r
+    datos_reducidos = np.zeros([cant_reducida_datos, cant_param])
+    for i in range(cant_reducida_datos):
         datos_reducidos[i, :] = datos[i*r, :]
-    print(f"Después de la reducción quedaron {cant_muestras_reducidas} datos.")
+    print(f"Después de la reducción quedaron {cant_reducida_datos} datos.")
     return datos_reducidos
 
 

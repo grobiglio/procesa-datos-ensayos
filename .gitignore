@@ -1,3 +1,4 @@
 *.pyc
 *.png
-datos_en_bruto.mat
+*.mat
+pruebas.py
