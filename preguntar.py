@@ -7,8 +7,8 @@ ingresar.
 """
 
 
-def pedir_opcion_principal():
-    """Requerir al usuario que ingrese una opción entre las propuestas
+def solicitar_opcion_principal():
+    """Solicitar al usuario que ingrese una opción entre las propuestas
     en el menú principal.
     
     Parametros

@@ -40,9 +40,9 @@ def leer_archivo(nombre_archivo: str) -> dict:
         return
 
 
-def extraer_claves(cont_mat: dict) -> list:
-    """Extrae las claves del contenido del archivo .mat que se hallan
-    en cont_mat.
+def obtener_claves(cont_mat: dict) -> list:
+    """Obtiene las claves que se hallan en la información del archivo
+    .mat que se pasó al diccionario cont_mat.
 
     Parametros
     ----------
@@ -52,7 +52,7 @@ def extraer_claves(cont_mat: dict) -> list:
     Salidas
     -------
     claves: list
-        Lista de cadena de caracteres con las claves extraidas.
+        Lista de cadena de caracteres con las claves obtenidas.
         Posición 0: Clave para leer datos
         Posición 1: Calve para leer información de exportación
     """

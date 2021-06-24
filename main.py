@@ -11,14 +11,14 @@ import leer
 import posprocesar
 import graficar
 import preguntar
-from info import info_param
+from info import presiones_absolutas
 
 os.system('cls')
 figura = 0 # Inicializo el número de figura a graficar
 
 opcion_escogida = ""
 while opcion_escogida != "4":
-    opcion_escogida = preguntar.pedir_opcion_principal()
+    opcion_escogida = preguntar.solicitar_opcion_principal()
 
     if opcion_escogida == "1":
         print("Lo siento 😥, esta oción aún no está disponible.")
@@ -27,7 +27,7 @@ while opcion_escogida != "4":
         # Lectura del archivo y extracción de información
         nombre_archivo = preguntar.solicitar_nombre_de_archivo()
         cont_mat = leer.leer_archivo(nombre_archivo)
-        claves = leer.extraer_claves(cont_mat)
+        claves = leer.obtener_claves(cont_mat)
         clave_datos = claves[0]
         clave_info_export = claves[1]
         info_export = leer.extraer_info_exportacion(cont_mat,
@@ -39,19 +39,20 @@ while opcion_escogida != "4":
         # Posprocesamiento de datos leidos
         reducir = input("¿Querés reducir la frecuencia de muestreo? (S/N): ")
         if reducir.upper() == "S":
-            datos_reducidos = posprocesar.reducir_datos(datos, frec_muestreo)
-            datos = np.copy(datos_reducidos)
+            datos = posprocesar.reducir_datos(datos, frec_muestreo)
         datos = posprocesar.iniciar_tiempo(datos)
         # Las presiones de combustible se pasan a psia
-        datos[:, 3] = datos[:, 3]+14.7
-        datos[:, 5] = datos[:, 5]+14.7
-        datos[:, 6] = datos[:, 6]+14.7
+        columnas = []
+        for presion in presiones_absolutas:
+            indice = nombre_parametros.index(presion)
+            columnas.append(indice)
+        datos = posprocesar.convertir_psia(datos, columnas)
         duracion_ensayo = datos[-1, 0]
         print(f"El ensayo tuvo una duración de {duracion_ensayo:0.0f} \
 segundos ({duracion_ensayo/3600:0.2f} horas).")
-        nuevo_nombre_parametros = posprocesar.renombrar_parametros(nombre_parametros)
+        nombre_parametros = posprocesar.renombrar_parametros(nombre_parametros)
         print("Los parámetros se renombraron. Los nuevos nombres son:")
-        for nombre_parametro in nuevo_nombre_parametros:
+        for nombre_parametro in nombre_parametros:
             print(nombre_parametro)
         # Fin pos procesamiento de datos leidos
 
@@ -64,12 +65,12 @@ segundos ({duracion_ensayo/3600:0.2f} horas).")
         param_a_graficar = []
         no_parametro = -1
         print("\n¿Qué parámetro querés graficar")
-        for nombre in enumerate(nuevo_nombre_parametros):
+        for nombre in enumerate(nombre_parametros):
             print (f"{nombre[0]}: {nombre[1]}")
         while no_parametro != 0:
             no_parametro = int(input("? "))
             id_param["no_param"] = no_parametro
-            id_param["param"] = nuevo_nombre_parametros[no_parametro]
+            id_param["param"] = nombre_parametros[no_parametro]
             d = copy.deepcopy(id_param)
             param_a_graficar.append(d)
         print(param_a_graficar)
@@ -80,14 +81,13 @@ segundos ({duracion_ensayo/3600:0.2f} horas).")
             ti = 0
             tf = duracion_ensayo
         
-        tiempo = datos_reducidos[:, param_a_graficar[-1]["no_param"]]
-        parametro = datos_reducidos[:, param_a_graficar[0]["no_param"]]
+        tiempo = datos[:, param_a_graficar[-1]["no_param"]]
+        parametro = datos[:, param_a_graficar[0]["no_param"]]
         unidad = ""
         graficar.graficar_varias_curvas(float(ti),
                                         float(tf),
-                                        datos_reducidos,
+                                        datos,
                                         param_a_graficar,
-                                        frec_muestreo,
                                         "",
                                         figura)
         figura += 1

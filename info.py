@@ -1,12 +1,14 @@
-info_param = [
+unidades = [
     {
         "parametro": "FUELPLH",
-        "unidad": "psia",
-        "corrim": 14.7
+        "unidad": "psia"
     },
     {
         "parametro": "FUELPRH",
-        "unidad": "psia",
-        "corrim": 14.7
+        "unidad": "psia"
     }
 ]
+
+presiones_absolutas = ["FUELPLH_UI",
+                       "FUELPRH_UI",
+                       "INVFACUP_UI"]

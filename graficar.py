@@ -25,9 +25,9 @@ def graficar_varias_curvas(ti: float,
                            tf: float,
                            datos: np.ndarray,
                            parametros: list,
-                           frec_muestreo: int,
                            unidad: str = "",
                            figura: int = 0) -> None:
+    frec_muestreo = 1/datos[1,0]
     i = round(ti*frec_muestreo)
     j = round(tf*frec_muestreo)
     nombre_figura = f"figura{figura}.png"
@@ -43,4 +43,5 @@ def graficar_varias_curvas(ti: float,
     plt.ylabel(unidad)
     plt.legend()
     plt.savefig(nombre_figura)
-    os.system("C:/Users/Guillermo/Documents/desarrollos/procesa-datos-ensayos/"+nombre_figura)
+    # os.system("C:/Users/Guillermo/Documents/desarrollos/procesa-datos-ensayos/"+nombre_figura)
+    os.system(nombre_figura)

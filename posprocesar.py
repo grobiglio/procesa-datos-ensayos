@@ -74,3 +74,28 @@ def renombrar_parametros(nombre_parametros):
         if parametro != "Time":
             nuevos_nombres.append(parametro[:-3])
     return nuevos_nombres
+
+
+def convertir_psia(datos: np.ndarray, columnas: list) -> np.ndarray:
+    """Incrementa los valores que se hallan en la matriz datos cuyas
+    columnas coincidan con las provistas en la lista columnas en 14.7
+    de modo que los valores en psig se convierten a psia.
+
+    Parametros
+    ----------
+    datos : numpy array
+        Registro de parámetros.
+    columnas : list
+        Lista de enteros cuyos valores corresponden a los de las
+        columnas que tienen los registros que deben incrementarse en
+        14.7.
+
+    Salidas
+    -------
+    datos : numpy array
+        Registro de parámetros con valores de presión convertidos a
+        psia.
+    """
+    for i in columnas:
+        datos[:, i] = datos[:, i]+14.7
+    return datos
